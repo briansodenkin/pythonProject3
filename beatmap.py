@@ -1,13 +1,15 @@
+import random
+
 import librosa
 import librosa.display
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 filepath = 'Cash_Cash_-_Overtime.ogg'
 
+
 def mp3_to_hpss_spectrogram():
-    x, sr = librosa.load(filepath, duration = 60)
+    x, sr = librosa.load(filepath, duration=60)
     D = librosa.stft(x)
     D_harmonic, D_percussive = librosa.decompose.hpss(D)
     rp = np.max(np.abs(D))
@@ -26,6 +28,7 @@ def mp3_to_hpss_spectrogram():
     plt.title('Percussive spectrogram')
     plt.tight_layout()
 
+
 def mp3_to_hpss_waveplot():
     fig, ax = plt.subplots(nrows=3, sharex=True, sharey=True)
     y, sr = librosa.load(filepath, duration=60)
@@ -38,6 +41,7 @@ def mp3_to_hpss_waveplot():
     librosa.display.waveplot(perc, sr=sr, color='r', alpha=0.5, ax=ax[2])
     ax[2].set(title='Percussive waveform')
 
+
 def mp3_to_hpss():
     y, sr = librosa.load(filepath, duration=60, sr=None)
     D = librosa.stft(y)
@@ -47,6 +51,7 @@ def mp3_to_hpss():
     import soundfile as sf
     filename = filepath + "_percussive.wav"
     sf.write(filename, p, 44100)
+
 
 def mp3_to_txt():
     file_path = filepath + "_percussive.wav"
@@ -58,11 +63,22 @@ def mp3_to_txt():
     with open(output_name, 'wt') as f:
         f.write('\n'.join(['%.1f' % onset_time for onset_time in onset_times]))
 
+
 def txt_to_note():
-    pass
+    l1 = []
+    with open("beat_timeframe.txt", "r") as txt_file:
+        new_data = list(set(txt_file))
+        for i in new_data:
+            l1.append(int(float(str(i).replace('\n', ''))))
+    l1.sort()
+    l1 = list(dict.fromkeys(l1))
+    for i in l1:
+        print(random.randint(1, 3), i)
+        #song1.add_note(random.randint(1, 3), i)
 
 mp3_to_hpss()
 mp3_to_txt()
+txt_to_note()
 
 # Visualisation
 # mp3_hpss_visualise()
