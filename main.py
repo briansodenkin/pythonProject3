@@ -101,6 +101,7 @@ class button_difficulty(pygame.sprite.Sprite):
         self.screen.blit(easy, [self.x1, self.y1])
         self.screen.blit(hard, [self.x2, self.y2])
 
+
 class button_back(pygame.sprite.Sprite):
     def __init__(self, screen, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -117,9 +118,9 @@ class button_back(pygame.sprite.Sprite):
             font = pygame.font.Font('Azteca-Condensed.ttf', 40)
             text = font.render("Back", True, (255, 0, 0))
             if self.click[0] == 1:
-                print("BACKKKK")
                 return True
         self.screen.blit(text, [self.x, self.y])
+
 
 game_button = button(play_screen, "Game", 300, 100, 50)
 setting_button = button(play_screen, "Setting", 300, 300, 50)
@@ -152,7 +153,6 @@ class Song(pygame.sprite.Sprite):
         self.note3 = pygame.Surface([15, 65])
         self.album_art = album_art
         self.screen = screen
-
         self.Group_Note_Map = []
         self.Group_Note_Map_SyncTime = []
         self.Group_LongNote_Map_Length = []
@@ -160,8 +160,8 @@ class Song(pygame.sprite.Sprite):
         self.index_SyncTime = 0
         self.index_LongNote = 0
 
-    def add_note(self, type, sync_time, length=None):
-        self.Group_Note_Map.append(type)
+    def add_note(self, note_type, sync_time, length=None):
+        self.Group_Note_Map.append(note_type)
         self.Group_Note_Map_SyncTime.append(sync_time)
         if length is not None:
             self.Group_LongNote_Map_Length.append(length)
@@ -193,19 +193,17 @@ song2 = Song("Zedd - Find You ft. Matthew Koma & Miriam Bryant (TAK Remix).ogg",
 song3 = Song("Clarity_Zedd_Union_Mix_Zedd_320k_mp3.ogg", "Clarity(zedd union remix)", "Zedd", 1)
 song_list_list = [song1, song2, song3]
 
+
 class gensonglist(pygame.sprite.Sprite):
     List = []
     List_map = []
     List_font = []
     List_Background = []
-    list_focus = 0
     list_count = 0
     start = 200
     margin = 50
     margin_background = 600
     MODE_FADE_OUT = False
-    MODE_SCROLL_DOWN = False
-    MODE_SCROLL_UP = False
     speed = 0
     first_pos = 0
     pos = 0
@@ -222,6 +220,7 @@ class gensonglist(pygame.sprite.Sprite):
         self.image = pygame.Surface([400, 750])
         self.background = pygame.Surface((1200, 750))
         self.screen = screen
+        self.list_focus = 0
 
     def append(self, title, background_image, artist, d, songs=None):
         self.List.append(title)
@@ -231,101 +230,44 @@ class gensonglist(pygame.sprite.Sprite):
         self.list_count += 1
 
     def update(self, up=False, down=False, Sort_A=False, Sort_B=False, enter=False, SpeedUp=False, SpeedDown=False):
-        global list_focus
         self.margin = 50
-        self.screen.blit(self.background, [0, self.pos])
-        selected = pygame.Surface([1600, 70])
-        selected.fill((0, 0, 0))
+        self.screen.blit(self.background, [0, 0])
+        selected = pygame.Surface([1000, 60])
+        selected.fill((255, 255, 255))
 
-        if up and self.list_focus > 0:
-            if self.MODE_SCROLL_UP:
-                return False
+        if up:
             self.list_focus -= 1
+            print("====================================")
             print(self.list_focus)
             self.start += 60
             sound = pygame.mixer.Sound("KEY_A_SOUND.wav")
             sound.play()
-            self.MODE_SCROLL_UP = True
 
-        if down and self.list_focus < self.list_count - 1:
-            if self.MODE_SCROLL_DOWN:
-                return False
+        if down:
             self.list_focus += 1
+            print("************************************")
             print(self.list_focus)
             self.start -= 60
             sound = pygame.mixer.Sound("KEY_A_SOUND.wav")
             sound.play()
-            self.MODE_SCROLL_DOWN = True
 
         if enter:
-            self.MODE_FADE_OUT = True
-            self.cover = pygame.Surface((200, 400))
-            self.start_time = time.time()
-            self.cover.fill((255, 255, 255))
-            pygame.mixer.Sound("KEY_A_SOUND.wav").play()
 
-        if 1600 > self.mouse[0] > 400 and 300 > self.mouse[1] > 230:
-            if self.click[0] == 1:
-                pygame.time.delay(100)
-                self.MODE_FADE_OUT = True
-                self.cover = pygame.Surface((200, 400))
-                self.start_time = time.time()
-                self.cover.fill((255, 255, 255))
-                pygame.mixer.Sound("KEY_A_SOUND.wav").play()
+            self.cover = pygame.Surface([1000, 60])
+            self.start_time = time.time()
+            self.cover.fill((0, 0, 255))
+            pygame.mixer.Sound("KEY_A_SOUND.wav").play()
 
         self.margin_background = 0
         for image in self.List_Background:
-            self.screen.blit(image, [0, self.pos + self.margin_background])
-            self.margin_background += 750
-
-        self.margin_background = 0
-        if self.MODE_SCROLL_UP:
-            self.pos += self.speed
-            self.speed += 120
-            self.alpha_value -= self.alpha_value_change_speed
-            self.alpha_value_change_speed += 9
-            if self.alpha_value > 0:
-                self.alpha_value -= 1
-            for image in self.List_Background:
-                self.screen.blit(image, [0, self.pos + self.margin_background])
-                self.margin_background += 750
-            if self.pos == -750 * self.list_focus:
-                self.MODE_SCROLL_UP = False
-                self.speed = 0
-                self.alpha_value = 180
-                pygame.mixer.music.fadeout(1200)
-
-        # When Scroll down
-        if self.MODE_SCROLL_DOWN:
-            self.pos -= self.speed
-            self.speed += 120
-            self.alpha_value -= self.alpha_value_change_speed
-            self.alpha_value_change_speed += 9
-            for image in self.List_Background:
-                self.screen.blit(image, [0, self.pos + self.margin_background])
-                self.margin_background += 750
-            if self.pos == -750 * self.list_focus:
-                self.MODE_SCROLL_DOWN = False
-                self.speed = 0
-                self.alpha_value = 180
-                pygame.mixer.music.fadeout(1200)
-
-        # BGM
-        if not pygame.mixer.music.get_busy():
-            pygame.time.delay(50)
-            pygame.mixer.music.load(song_list_list[self.list_focus].file)
-            pygame.mixer.music.play(0, song_list_list[self.list_focus].highlight + 0.01)
-            pygame.mixer.music.set_volume(0.5)
-
-        selected.set_alpha(self.alpha_value)
-        self.screen.blit(selected, (400, 230))
+            self.screen.blit(image, [0, 0])
 
         i = 0
         for title in self.List:
             self.List_font[i] = (self.main_font.render(title, True, (0, 0, 0)))
             i += 1
         # only focused item Set Font with WHITE color
-        self.List_font[self.list_focus] = self.main_font.render(self.List[self.list_focus], True, (0, 0, 0))
+        self.List_font[self.list_focus] = self.main_font.render(self.List[self.list_focus], True, (0, 250, 0))
 
         # OUTPUT PART
         for i in self.List_font:
@@ -336,48 +278,20 @@ class gensonglist(pygame.sprite.Sprite):
             self.screen.blit(i, [450, self.start + self.margin])
             self.margin += 60
 
-        SongsList_txt = self.main_font.render('Song List', True, (0, 0, 0))
-        self.screen.blit(SongsList_txt, (150, 130))
 
-        # COUNT Of Songs
+        SongsList_txt = self.main_font.render('Song List', True, (250, 250, 0))
+        self.screen.blit(SongsList_txt, (100, 150))
         s = "(%d / %d)" % (self.list_focus + 1, self.list_count)
-        self.screen.blit(self.main_font.render(s, True, (0, 0, 0)), (190, 80))
+        self.screen.blit(self.main_font.render(s, True, (250, 250, 0)), (100, 300))
 
         # Back Button
         if 75 > self.mouse[0] > 25 and 25 < self.mouse[1] < 50:
             if self.click[0] == 1:
                 self.MODE_FADE_OUT = False
 
-        # Set The Speed Of Song
-        if self.MODE_FADE_OUT:
-            gap = (self.end_time - self.start_time)
-            if gap < 1:
-                self.cover.set_alpha(gap * 215)
-                self.screen.blit(self.cover, [0, 0])
-            else:
-                self.screen.blit(self.cover, [0, 0])
-                self.screen.blit(self.main_font.render("Set The Speed", True, (0, 0, 0)), (600, 345))
-                self.screen.blit(self.main_font.render(str(self.SongSpeed), True, (0, 0, 0)), (630, 375))
-                self.screen.blit(self.main_font.render("-", True, (0, 0, 0)), (610, 375))
-                self.screen.blit(self.main_font.render("+", True, (0, 0, 0)), (650, 375))
-                if 650 + 65 > self.mouse[0] > 650 and 375 < self.mouse[1] < 375 + 55:
-                    if self.click[0]:
-                        if self.SongSpeed < 9:
-                            self.SongSpeed += 1
-                        pygame.time.delay(100)
-                if 610 + 65 > self.mouse[0] > 610 and 375 < self.mouse[1] < 375 + 55:
-                    if self.click[0]:
-                        if self.SongSpeed > 1:
-                            self.SongSpeed -= 1
-                        pygame.time.delay(100)
-
-
 song_list = gensonglist(play_screen)
 for song in song_list_list:
-    song_list.append(song.song_title, pygame.image.load("image" + str(random.randrange(2, 5)) + ".jpg").convert(),
-                     song.artist, song.level)
-
-
+    song_list.append(song.song_title, pygame.image.load("image2.jpg").convert(), song.artist, song.level)
 # ================================= Song list End ======================================================================
 
 # =================================== Setting ==== =====================================================================
@@ -491,36 +405,27 @@ while not done:
                 pygame.mixer.music.fadeout(1500)
                 start_time = time.time()
 
-        if event.type == pygame.KEYDOWN and SONG_PAGE == True and (MAIN_FADE_OUT_STATE == False):
+        if event.type == pygame.KEYDOWN and SONG_PAGE == True:
             if event.key == pygame.K_UP:
                 print("UP")
                 song_list.update(True, False)
+
             if event.key == pygame.K_DOWN:
                 print("DOWN")
                 song_list.update(False, True)
-            if event.key == pygame.K_KP_ENTER:
+
+            if event.key == pygame.K_RETURN:
+                print("ENTER")
                 song_list.update(False, False, False, False, True)
-                MAIN_FADE_OUT_STATE = True
+
             if event.key == pygame.K_ESCAPE:
                 SONG_PAGE = False
                 MAIN_PAGE = True
                 pygame.mixer.music.stop()
                 pygame.time.delay(300)
-        if event.type == pygame.MOUSEBUTTONDOWN and SONG_PAGE and MAIN_FADE_OUT_STATE == False:
-            if event.button == 5:
-                song_list.update(False, True)
-        if event.type == pygame.MOUSEBUTTONUP and SONG_PAGE and MAIN_FADE_OUT_STATE == False:
-            if event.button == 4:
-                song_list.update(True, False)
-        if event.type == pygame.MOUSEBUTTONUP and MAIN_FADE_OUT_STATE:
-            if event.button == 4:
-                song_list.update()
-        if event.type == pygame.MOUSEBUTTONDOWN and MAIN_FADE_OUT_STATE:
-            if event.button == 5:
-                song_list.update()
-    # Intro Scene
+    # Main Page
     if MAIN_PAGE:
-        play_screen.fill((0, 0, 0))
+        play_screen.fill((255, 255, 255))
         play_screen.blit(background, [0, 0])
         buttons.draw(play_screen)
 
@@ -547,7 +452,7 @@ while not done:
         clock.tick(60)
 
     elif SONG_PAGE:
-        play_screen.fill((0, 0, 0))
+        play_screen.fill((255, 255, 255))
         now_item = song_list.list_focus
         song_list.update()
         if back_button.update() and MAIN_FADE_OUT_STATE == False:
@@ -576,4 +481,3 @@ while not done:
                 pygame.time.delay(100)
         pygame.display.flip()
         clock.tick(60)
-
