@@ -220,7 +220,7 @@ class gensonglist(pygame.sprite.Sprite):
         self.image = pygame.Surface([400, 750])
         self.background = pygame.Surface((1200, 750))
         self.screen = screen
-        self.list_focus = 0
+        self.choice = 0
 
     def append(self, title, background_image, artist, d, songs=None):
         self.List.append(title)
@@ -236,17 +236,17 @@ class gensonglist(pygame.sprite.Sprite):
         selected.fill((255, 255, 255))
 
         if up:
-            self.list_focus -= 1
+            self.choice -= 1
             print("====================================")
-            print(self.list_focus)
+            print(self.choice)
             self.start += 60
             sound = pygame.mixer.Sound("KEY_A_SOUND.wav")
             sound.play()
 
         if down:
-            self.list_focus += 1
+            self.choice += 1
             print("************************************")
-            print(self.list_focus)
+            print(self.choice)
             self.start -= 60
             sound = pygame.mixer.Sound("KEY_A_SOUND.wav")
             sound.play()
@@ -267,11 +267,11 @@ class gensonglist(pygame.sprite.Sprite):
             self.List_font[i] = (self.main_font.render(title, True, (0, 0, 0)))
             i += 1
         # only focused item Set Font with WHITE color
-        self.List_font[self.list_focus] = self.main_font.render(self.List[self.list_focus], True, (0, 250, 0))
+        self.List_font[self.choice] = self.main_font.render(self.List[self.choice], True, (0, 125, 125))
 
         # OUTPUT PART
         for i in self.List_font:
-            if i == self.List_font[self.list_focus]:
+            if i == self.List_font[self.choice]:
                 self.screen.blit(i, [400, self.start + self.margin])
                 self.margin += 60
                 continue
@@ -281,7 +281,7 @@ class gensonglist(pygame.sprite.Sprite):
 
         SongsList_txt = self.main_font.render('Song List', True, (250, 250, 0))
         self.screen.blit(SongsList_txt, (100, 250))
-        s = "(%d / %d)" % (self.list_focus + 1, self.list_count)
+        s = "(%d / %d)" % (self.choice + 1, self.list_count)
         self.screen.blit(self.main_font.render(s, True, (250, 250, 0)), (100, 300))
 
         # Back Button
@@ -291,7 +291,7 @@ class gensonglist(pygame.sprite.Sprite):
 
 song_list = gensonglist(play_screen)
 for song in song_list_list:
-    song_list.append(song.song_title, pygame.image.load("image2.jpg").convert(), song.artist, song.level)
+    song_list.append(song.song_title, pygame.image.load("free-lady-photographer-is-taking-photo-beautiful-sunset-farther-man-is-stealing-her-glance-vectors_181670-original.jpg").convert(), song.artist, song.level)
 # ================================= Song list End ======================================================================
 
 # =================================== Setting ==== =====================================================================
@@ -316,8 +316,6 @@ class setting_list(pygame.sprite.Sprite):
 
 
 setting = setting_list(play_screen)
-
-
 # =================================== Setting End ======================================================================
 
 
@@ -417,6 +415,9 @@ while not done:
             if event.key == pygame.K_RETURN:
                 print("ENTER")
                 song_list.update(False, False, False, False, True)
+                SONG_PAGE = False
+                MAIN_PAGE = False
+                GAME_PAGE = True
 
             if event.key == pygame.K_ESCAPE:
                 SONG_PAGE = False
@@ -453,7 +454,7 @@ while not done:
 
     elif SONG_PAGE:
         play_screen.fill((255, 255, 255))
-        now_item = song_list.list_focus
+        now_item = song_list.choice
         song_list.update()
         if back_button.update() and MAIN_FADE_OUT_STATE == False:
             MAIN_PAGE = True
@@ -481,3 +482,5 @@ while not done:
                 pygame.time.delay(100)
         pygame.display.flip()
         clock.tick(60)
+
+    elif GAME_PAGE:
