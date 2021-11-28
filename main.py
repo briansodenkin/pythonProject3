@@ -272,7 +272,7 @@ class gensonglist(pygame.sprite.Sprite):
         # OUTPUT PART
         for i in self.List_font:
             if i == self.List_font[self.list_focus]:
-                self.screen.blit(i, [405, self.start + self.margin])
+                self.screen.blit(i, [400, self.start + self.margin])
                 self.margin += 60
                 continue
             self.screen.blit(i, [450, self.start + self.margin])
@@ -280,7 +280,7 @@ class gensonglist(pygame.sprite.Sprite):
 
 
         SongsList_txt = self.main_font.render('Song List', True, (250, 250, 0))
-        self.screen.blit(SongsList_txt, (100, 150))
+        self.screen.blit(SongsList_txt, (100, 250))
         s = "(%d / %d)" % (self.list_focus + 1, self.list_count)
         self.screen.blit(self.main_font.render(s, True, (250, 250, 0)), (100, 300))
 
