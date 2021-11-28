@@ -74,7 +74,7 @@ def txt_to_note():
     l1 = list(dict.fromkeys(l1))
     for i in l1:
         print(random.randint(1, 3), i)
-        #song1.add_note(random.randint(1, 3), i)
+        # song1.add_note(random.randint(1, 3), i)
 
 mp3_to_hpss()
 mp3_to_txt()
