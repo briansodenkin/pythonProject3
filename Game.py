@@ -26,15 +26,6 @@ clock = pygame.time.Clock()
 
 # Initializing the Notes
 for i in range(0, MapList.MapList[0].get_note_count()):
-    # if MapList.MapList[0].get_long_note_length():
-        # NoteList.append(map.note(screen,MapList.MapList[0].get_long_note_length(),128,MapList.MapList[0].get_note(), speed=5, isLongNote=True))
-        # MapList.MapList[0].move_index()
-        # NoteList_Drawer.append(pygame.sprite.RenderPlain(NoteList[i]))
-    # else:
-        # NoteList.append(map.note(screen,27, 128, MapList.MapList[0].get_note(), speed=5,isLongNote=False))
-        # MapList.MapList[0].move_index()
-        # NoteList_Drawer.append(pygame.sprite.RenderPlain(NoteList[i]))
-
         NoteList.append(map.note(screen,27, 128, MapList.MapList[0].get_note(), speed=5,isLongNote=False))
         MapList.MapList[0].move_index()
         NoteList_Drawer.append(pygame.sprite.RenderPlain(NoteList[i]))

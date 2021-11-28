@@ -484,3 +484,9 @@ while not done:
         clock.tick(60)
 
     elif GAME_PAGE:
+        background = pygame.image.load("game_background.jpg").convert()
+        play_screen.blit(background, [0, 0])
+        pygame.draw.line(play_screen, (0, 0, 0), (200, 128), (1200, 128), 2)
+        pygame.draw.line(play_screen, (0, 0, 0), (200, 256), (1200, 256), 2)
+        pygame.draw.line(play_screen, (0, 0, 0), (200, 384), (1200, 384), 2)
+        length = 0.1
