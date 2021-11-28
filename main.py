@@ -52,7 +52,7 @@ class button(pygame.sprite.Sprite):
         if self.x + 120 > mouse[0] > self.x and self.y + 80 > mouse[1] > self.y:
             # Enlarge if the mouse close to the button
             font = pygame.font.Font('Azteca-Condensed.ttf', self.font_size + 30)
-            txt = font.render(self.message, True, (0, 0, 0))
+            txt = font.render(self.message, True, (255, 255, 255))
             if click[0] == True and button_type == 1:
                 print("GAME")
                 pygame.time.delay(500)
@@ -104,20 +104,22 @@ class button_difficulty(pygame.sprite.Sprite):
 class button_back(pygame.sprite.Sprite):
     def __init__(self, screen, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.click = pygame.mouse.get_pressed()
-        self.mouse = pygame.mouse.get_pos()
         self.x = x
         self.y = y
         self.screen = screen
 
     def update(self):
+        self.click = pygame.mouse.get_pressed()
+        self.mouse = pygame.mouse.get_pos()
         font = pygame.font.Font('Azteca-Condensed.ttf', 20)
-        text = font.render("Back", True, (0, 0, 0))
-        self.screen.blit(text, [self.x, self.y])
-        if 75 > self.mouse[0] > 25 and 25 < self.mouse[1] < 50:
+        text = font.render("Back", True, (255, 255, 255))
+        if 60 > self.mouse[0] > 10 and 10 < self.mouse[1] < 60:
+            font = pygame.font.Font('Azteca-Condensed.ttf', 40)
+            text = font.render("Back", True, (255, 0, 0))
             if self.click[0] == 1:
+                print("BACKKKK")
                 return True
-
+        self.screen.blit(text, [self.x, self.y])
 
 game_button = button(play_screen, "Game", 300, 100, 50)
 setting_button = button(play_screen, "Setting", 300, 300, 50)
