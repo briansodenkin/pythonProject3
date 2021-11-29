@@ -444,7 +444,6 @@ class note(pygame.sprite.Sprite):
                     print('miss1')
                     combo(0, True)
                     self.note_fade_out(True)
-                    score(0)
                     is_first_pressed(False)
             elif 135 < self.rect.x < 165 and KeyPressed and self.type == type:
                 print('miss')
@@ -771,9 +770,9 @@ while not done:
             background = pygame.image.load("game_background.jpg").convert()
             play_screen.fill((255, 255, 255))
             play_screen.blit(background, [0, 0])
-            pygame.draw.line(play_screen, (0, 0, 0), (180, 128), (1200, 128), 2)
-            pygame.draw.line(play_screen, (0, 0, 0), (1800, 256), (1200, 256), 2)
-            pygame.draw.line(play_screen, (0, 0, 0), (180, 384), (1200, 384), 2)
+            pygame.draw.line(play_screen, (0, 0, 0), (160, 128), (1200, 128), 2)
+            pygame.draw.line(play_screen, (0, 0, 0), (160, 256), (1200, 256), 2)
+            pygame.draw.line(play_screen, (0, 0, 0), (160, 384), (1200, 384), 2)
             length = 0.1
 
             play_screen.blit(main_font.render("Score", True, (255, 255, 255)), (600, 500))
