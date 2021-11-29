@@ -1,5 +1,3 @@
-import random
-
 import pygame
 import eyed3
 import time
