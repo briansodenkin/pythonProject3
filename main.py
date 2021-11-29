@@ -171,8 +171,11 @@ class Song(pygame.sprite.Sprite):
     def move_sync_index(self):
         if self.index_SyncTime < len(self.Group_Note_Map_SyncTime) - 1:
             self.index_SyncTime += 1
+            print("lllllllllllllllllll")
+            print(self.index_SyncTime)
             return True
         return False
+
 
     def move_index(self):
         if self.index_map < len(self.Group_Note_Map) - 1:
@@ -181,6 +184,15 @@ class Song(pygame.sprite.Sprite):
     def get_note_count(self):
         if self.mode == 1:
             return self.Group_Note_Map.__len__() - 1
+
+    def get_note(self):
+        return self.Group_Note_Map[self.index_map]
+
+    def get_sync(self):
+        if self.mode == 1:
+            print("ksdfdsfsdfdsfdsfds")
+            print(self.index_SyncTime)
+            return self.Group_Note_Map_SyncTime[self.index_SyncTime]
 
     def init_index(self):
         self.index_SyncTime = 0
@@ -192,6 +204,57 @@ song1 = Song("Cash_Cash_-_Overtime.ogg", "Overtime", "Cash Cash", 5)
 song2 = Song("Zedd - Find You ft. Matthew Koma & Miriam Bryant (TAK Remix).ogg", "Find You", "Zedd", 2)
 song3 = Song("Clarity_Zedd_Union_Mix_Zedd_320k_mp3.ogg", "Clarity(zedd union remix)", "Zedd", 1)
 song_list_list = [song1, song2, song3]
+
+song1.add_note(2, 3)
+song1.add_note(3, 5)
+song1.add_note(1, 7)
+song1.add_note(2, 8)
+song1.add_note(3, 9)
+song1.add_note(1, 10)
+song1.add_note(2, 11)
+song1.add_note(3, 12)
+song1.add_note(1, 13)
+song1.add_note(2, 14)
+song1.add_note(3, 15)
+song1.add_note(1, 16)
+song1.add_note(2, 17)
+song1.add_note(3, 18)
+song1.add_note(1, 19)
+song1.add_note(2, 20)
+song1.add_note(3, 21)
+song1.add_note(1, 22)
+song1.add_note(2, 23)
+song1.add_note(3, 24)
+song1.add_note(1, 25)
+song1.add_note(2, 26)
+song1.add_note(3, 27)
+song1.add_note(1, 28)
+song1.add_note(2, 28.5)
+song1.add_note(3, 28.7)
+song1.add_note(1, 29)
+song1.add_note(2, 30.1)
+song1.add_note(3, 31)
+song1.add_note(1, 32)
+song1.add_note(2, 33.5)
+song1.add_note(3, 34)
+song1.add_note(1, 36)
+song1.add_note(2, 37)
+song1.add_note(3, 39)
+song1.add_note(1, 42)
+song1.add_note(2, 43)
+song1.add_note(3, 44)
+song1.add_note(1, 45)
+song1.add_note(2, 45.6)
+song1.add_note(3, 46.3)
+song1.add_note(1, 47)
+song1.add_note(2, 48.5)
+song1.add_note(3, 49)
+song1.add_note(1, 51)
+song1.add_note(2, 52)
+song1.add_note(3, 55)
+song1.add_note(3, 3)
+
+
 
 
 class gensonglist(pygame.sprite.Sprite):
@@ -318,9 +381,190 @@ class setting_list(pygame.sprite.Sprite):
 setting = setting_list(play_screen)
 # =================================== Setting End ======================================================================
 
+# =================================== Note Start =======================================================================
+isFirstPressed = False
+Killed_Note = 0
+Combo = 0
+Score = 0
+Perfect_count = 0
+Great_count = 0
+Miss_count = 0
 
-# =================================== Node =============================================================================
-class node(pygame.sprite.Sprite):
+class note(pygame.sprite.Sprite):
+    Killed_Note = 0
+    Combo = 0
+    onCount = 0
+    MODE_FADE_OUT = None
+
+    def __init__(self, screen, width, height, note_type, speed=10, isLongNote=False):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([width, height])
+        self.screen = screen
+        self.width = width
+        if note_type == 1:
+            self.image = pygame.image.load("KEY_A.jpg").convert()
+        elif note_type == 2:
+            self.image = pygame.image.load("KEY_A.jpg").convert()
+        else:
+            self.image = pygame.image.load("KEY_A.jpg").convert()
+        self.image = pygame.transform.scale(self.image, (width, height))
+        self.rect = self.image.get_rect()
+        self.speed = speed
+        self.rect.x = 1200
+        self.type = type
+        self.isLongNote = isLongNote
+        self.LongNote_judge = 3
+        if note_type == 1:
+            self.rect.y = 128
+        elif note_type == 2:
+            self.rect.y = 256
+        else:
+            self.rect.y = 384
+
+    def update(self, note_type=0, KeyPressed=False, KeyUp=False):
+        self.rect.x -= self.speed
+        if self.note_fade_out():
+            if self.onCount == 0:
+                self.start_time = time.time()
+            end_time = time.time() - self.start_time
+            self.image.set_alpha(255 - (end_time * 555))
+            self.onCount += 1
+            if end_time > 1.25:
+                self.kill()
+                killed_note(1)
+                self.onCount = 0
+                self.note_fade_out(False)
+            return
+        if self.isLongNote:
+            if isFirstPressed:
+                if (self.rect.x + self.width)/6 < 135 and KeyUp:
+                    print('done')
+                    combo(1)
+                    self.note_fade_out(True)
+                    score(10)
+                    is_first_pressed(False)
+                elif KeyUp:
+                    print('miss1')
+                    combo(0, True)
+                    self.note_fade_out(True)
+                    score(0)
+                    is_first_pressed(False)
+            elif 135 < self.rect.x < 165 and KeyPressed and self.type == type:
+                print('miss')
+                combo(0, True)
+                self.note_fade_out(True)
+                self.LongNote_judge = 3
+                miss(1)
+            elif 110 <= self.rect.x < 134 and KeyPressed and self.type == type:
+                print('great')
+                is_first_pressed(True)
+                self.LongNote_judge = 2
+                self.kill()
+            elif 78 <= self.rect.x < 110 and KeyPressed and self.type == type:
+                print('perfect1')
+                is_first_pressed(True)
+                self.LongNote_judge = 1
+                self.kill()
+            elif not KeyPressed and self.rect.x < 78:
+                if self.rect.x + self.width < 230:
+                    print('miss2')
+                    combo(0, True)
+                    self.note_fade_out(True)
+                    score(3)
+        else:
+            if 135 < self.rect.x < 165 and KeyPressed and self.type == type:
+                print ('miss')
+                combo(0, True)
+                self.note_fade_out(True)
+                score(3)
+                miss(1)
+            elif 110 <= self.rect.x < 135 and KeyPressed and self.type == type:
+                print('great')
+                combo(1)
+                self.note_fade_out(True)
+                score(2)
+                great(1)
+                self.kill()
+            elif 78 < self.rect.x < 110 and KeyPressed and self.type == type:
+                print('perfect')
+                combo(1)
+                self.note_fade_out(True)
+                score(1)
+                perfect(1)
+                self.kill()
+            elif self.rect.x < 78:
+                print('miss3')
+                combo(0, True)
+                self.note_fade_out(True)
+                score(3)
+                miss(1)
+
+
+    def note_fade_out(self, bool = None):
+        if bool == None:
+            return self.MODE_FADE_OUT
+        self.MODE_FADE_OUT = bool
+        return self.MODE_FADE_OUT
+
+def combo(increase, init = False):
+    global Combo
+    if init:
+        Combo = 0
+    Combo += increase
+    return Combo
+
+
+def killed_note(increase, init = False):
+    global Killed_Note
+    if init:
+        Killed_Note = 0
+    Killed_Note += increase
+    return Killed_Note
+
+
+def perfect(increase, init = False):
+    global Perfect_count
+    if init:
+        Perfect_count = 0
+    Perfect_count += 1
+    return Perfect_count
+
+
+def great(increase, init = False):
+    global Great_count
+    if init:
+        Great_count = 0
+    Great_count += 1
+    return Great_count
+
+
+def miss(increase, init = False ):
+    pygame.mixer.Sound("mixkit-apartment-buzzer-bell-press-932.wav").play()
+    global Miss_count
+    if init:
+        Miss_count = 0
+    Miss_count += 1
+    return Miss_count
+
+
+def is_first_pressed(check):
+    global isFirstPressed
+    isFirstPressed = check
+    return isFirstPressed
+
+
+def score(increase, init= False):
+    global Score
+    if init:
+        Score = 0
+    Score += increase
+    return int(Score)
+# =================================== Note End =========================================================================
+
+
+
+# =================================== Beat =============================================================================
+class beat(pygame.sprite.Sprite):
     count = 0
 
     def __init__(self, X, Y, width, height, type, screen):
@@ -330,15 +574,15 @@ class node(pygame.sprite.Sprite):
         self.width = width
         self.height = height
         if type == 1:
-            self.image = pygame.image.load("block.jpg").convert()
+            self.image = pygame.image.load("KEY_A.jpg").convert()
             self.image = pygame.transform.scale(self.image, (width, height))
             self.sound = pygame.mixer.Sound("KEY_A_SOUND.wav")
         elif type == 2:
-            self.image = pygame.image.load("block.jpg").convert()
+            self.image = pygame.image.load("KEY_A.jpg").convert()
             self.image = pygame.transform.scale(self.image, (width, height))
             self.sound = pygame.mixer.Sound("KEY_A_SOUND.wav")
         elif type == 3:
-            self.image = pygame.image.load("block.jpg").convert()
+            self.image = pygame.image.load("KEY_A.jpg").convert()
             self.image = pygame.transform.scale(self.image, (width, height))
             self.sound = pygame.mixer.Sound("KEY_A_SOUND.wav")
 
@@ -349,29 +593,27 @@ class node(pygame.sprite.Sprite):
     def update(self, Keypressed, KeyUp, type=0):
 
         if Keypressed:
-            self.image = pygame.image.load("block.jpg").convert()
+            self.image = pygame.image.load("KEY_A.jpg").convert()
             self.image = pygame.transform.scale(self.image, (self.width, self.height))
             self.sound.play()
         elif KeyUp:
             if type == 1:
-                self.image = pygame.image.load("block.jpg").convert()
+                self.image = pygame.image.load("KEY_A.jpg").convert()
                 self.image = pygame.transform.scale(self.image, (self.width, self.height))
             elif type == 2:
-                self.image = pygame.image.load("block.jpg").convert()
+                self.image = pygame.image.load("KEY_A.jpg").convert()
                 self.image = pygame.transform.scale(self.image, (self.width, self.height))
             elif type == 3:
-                self.image = pygame.image.load("block.jpg").convert()
+                self.image = pygame.image.load("KEY_A.jpg").convert()
                 self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
-
-node1 = node(110, 192, 47, 128, 1, play_screen)
-node2 = node(110, 320, 47, 128, 2, play_screen)
-node3 = node(110, 448, 47, 128, 3, play_screen)
-nodes = pygame.sprite.RenderPlain([node1, node2, node3])
+beat1 = beat(120, 192, 40, 128, 1, play_screen)
+beat2 = beat(120, 320, 40, 128, 2, play_screen)
+beat3 = beat(120, 448, 40, 128, 3, play_screen)
+beats = pygame.sprite.RenderPlain([beat1, beat2, beat3])
 # =================================== Node End =========================================================================
 
-# =================================== Game Start =========================================================================
-
+# =================================== Game Start =======================================================================
 # First
 # UI with 3 buttons : MAIN_PAGE
 # UI with 3 songs : SONG_PAGE
@@ -381,7 +623,7 @@ SONG_PAGE = False
 GAME_PAGE = False
 SET_PAGE = False
 MAIN_FADE_OUT_STATE = False
-
+now_item = 0
 DIFFICULTY = False
 selected = 1
 NoteList = []
@@ -389,6 +631,8 @@ NoteList_Drawer = []
 Note_Count = 0
 MODE_NOTE_FALL = False
 done = False
+list_drawer = []
+note_list = []
 clock = pygame.time.Clock()
 while not done:
     # --- Main event loop
@@ -484,9 +728,74 @@ while not done:
         clock.tick(60)
 
     elif GAME_PAGE:
+        print("=================GAME==============================")
+        for i in range(0, song_list_list[now_item].get_note_count()):
+            note_list.append(note(play_screen, 27, 128, song_list_list[now_item].get_note(), speed=5, isLongNote=False))
+            song_list_list[now_item].move_index()
+            list_drawer.append(pygame.sprite.RenderPlain(note_list[i]))
+
+        for i in range(0, song_list_list[now_item].Group_Note_Map.__len__()-1):
+            note_list[i].alive()
+            note_list[i].rect.x = 1200
+
+        song_list_list[now_item].sound.play()
+        note_count = 0
+        NOTE_KILL = False
         background = pygame.image.load("game_background.jpg").convert()
-        play_screen.blit(background, [0, 0])
-        pygame.draw.line(play_screen, (0, 0, 0), (200, 128), (1200, 128), 2)
-        pygame.draw.line(play_screen, (0, 0, 0), (200, 256), (1200, 256), 2)
-        pygame.draw.line(play_screen, (0, 0, 0), (200, 384), (1200, 384), 2)
-        length = 0.1
+        start_time = time.time()
+        done = False
+
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.mixer.music.stop()
+                    done = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_a:
+                        for i in range(killed_note(0), note_count):
+                            list_drawer[i].update(1, True)
+                    if event.key == pygame.K_s:
+                        for i in range(killed_note(0), note_count):
+                            list_drawer[i].update(2, True)
+                    if event.key == pygame.K_d:
+                        for i in range(killed_note(0), note_count):
+                            list_drawer[i].update(3, True)
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_a:
+                        for i in range(killed_note(0), Note_Count):
+                            list_drawer[i].update(1, True, True)
+                    if event.key == pygame.K_s:
+                        for i in range(killed_note(0), Note_Count):
+                            list_drawer[i].update(2, True, True)
+                    if event.key == pygame.K_d:
+                        for i in range(killed_note(0), Note_Count):
+                            list_drawer[i].update(3, True, True)
+
+            background = pygame.image.load("game_background.jpg").convert()
+            play_screen.fill((255, 255, 255))
+            play_screen.blit(background, [0, 0])
+            pygame.draw.line(play_screen, (0, 0, 0), (200, 128), (1200, 128), 2)
+            pygame.draw.line(play_screen, (0, 0, 0), (200, 256), (1200, 256), 2)
+            pygame.draw.line(play_screen, (0, 0, 0), (200, 384), (1200, 384), 2)
+            length = 0.1
+
+            play_screen.blit(main_font.render("Score", True, (255, 255, 255)), (600, 500))
+            play_screen.blit(main_font.render("Combo", True, (255, 255, 255)), (400, 500))
+            play_screen.blit(main_font.render(str(combo(0)), True, (255, 255, 255)), (400, 550))
+            play_screen.blit(main_font.render(str(score(0)), True, (255, 255, 255)), (600, 550))
+            beats.draw(play_screen)
+            beats.update(0, 1)
+
+            if True:
+                if time.time() - start_time >= song_list_list[now_item].get_sync():
+                    if song_list_list[now_item].move_sync_index():
+                        MODE_NOTE_FALL = True
+                        Note_Count += 1
+                        song_list_list[now_item].move_index()
+                if MODE_NOTE_FALL:
+                    for i in range(killed_note(0), Note_Count):
+                        list_drawer[i].draw(play_screen)
+                        list_drawer[i].update(0, False)
+
+            pygame.display.flip()
+            clock.tick(60)
