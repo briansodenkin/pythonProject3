@@ -730,7 +730,7 @@ while not done:
     elif GAME_PAGE:
         print("=================GAME==============================")
         for i in range(0, song_list_list[now_item].get_note_count()):
-            note_list.append(note(play_screen, 27, 128, song_list_list[now_item].get_note(), speed=5, isLongNote=False))
+            note_list.append(note(play_screen, 27, 128, song_list_list[now_item].get_note(), speed=4, isLongNote=False))
             song_list_list[now_item].move_index()
             list_drawer.append(pygame.sprite.RenderPlain(note_list[i]))
 
