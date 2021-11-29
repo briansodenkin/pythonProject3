@@ -203,6 +203,7 @@ song2 = Song("Zedd - Find You ft. Matthew Koma & Miriam Bryant (TAK Remix).ogg",
 song3 = Song("Clarity_Zedd_Union_Mix_Zedd_320k_mp3.ogg", "Clarity(zedd union remix)", "Zedd", 1)
 song_list_list = [song1, song2, song3]
 
+# ==================================================== Add note to Song ================================================
 song1.add_note(2, 3)
 song1.add_note(3, 5)
 song1.add_note(1, 7)
@@ -251,9 +252,7 @@ song1.add_note(1, 51)
 song1.add_note(2, 52)
 song1.add_note(3, 55)
 song1.add_note(3, 3)
-
-
-
+#========================================== Add note to the song =======================================================
 
 class gensonglist(pygame.sprite.Sprite):
     List = []
@@ -772,9 +771,9 @@ while not done:
             background = pygame.image.load("game_background.jpg").convert()
             play_screen.fill((255, 255, 255))
             play_screen.blit(background, [0, 0])
-            pygame.draw.line(play_screen, (0, 0, 0), (200, 128), (1200, 128), 2)
-            pygame.draw.line(play_screen, (0, 0, 0), (200, 256), (1200, 256), 2)
-            pygame.draw.line(play_screen, (0, 0, 0), (200, 384), (1200, 384), 2)
+            pygame.draw.line(play_screen, (0, 0, 0), (180, 128), (1200, 128), 2)
+            pygame.draw.line(play_screen, (0, 0, 0), (1800, 256), (1200, 256), 2)
+            pygame.draw.line(play_screen, (0, 0, 0), (180, 384), (1200, 384), 2)
             length = 0.1
 
             play_screen.blit(main_font.render("Score", True, (255, 255, 255)), (600, 500))
